@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>タスク管理アプリ</title>
+    <title>高機能タスク管理アプリです</title>
     <style>
         * {
             margin: 0;
@@ -11,55 +11,125 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --container-bg: white;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --border-color: #e0e0e0;
+            --input-focus: #667eea;
+            --button-primary: #667eea;
+            --button-primary-hover: #5568d3;
+            --button-danger: #ff4757;
+            --button-danger-hover: #ff3838;
+            --button-success: #2ecc71;
+            --button-success-hover: #27ae60;
+            --task-bg: #f9f9f9;
+            --task-hover: #f0f0f0;
+            --priority-high: #ff4757;
+            --priority-medium: #ffa502;
+            --priority-low: #2ecc71;
+            --overdue: #ff6b81;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode {
+            --bg-gradient-start: #2c3e50;
+            --bg-gradient-end: #34495e;
+            --container-bg: #2c3e50;
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --text-muted: #7f8c8d;
+            --border-color: #34495e;
+            --input-focus: #3498db;
+            --button-primary: #3498db;
+            --button-primary-hover: #2980b9;
+            --task-bg: #34495e;
+            --task-hover: #3d566e;
+            --shadow: rgba(0, 0, 0, 0.5);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background 0.3s;
         }
 
         .container {
-            background: white;
+            background: var(--container-bg);
             border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px var(--shadow);
             width: 100%;
-            max-width: 500px;
+            max-width: 800px;
             padding: 30px;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
+            color: var(--text-primary);
             font-size: 28px;
+            transition: color 0.3s;
+        }
+
+        .theme-toggle {
+            padding: 8px 16px;
+            background: var(--button-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--button-primary-hover);
         }
 
         .input-section {
-            display: flex;
+            display: grid;
             gap: 10px;
             margin-bottom: 25px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
         }
 
         #taskInput {
             flex: 1;
             padding: 12px 15px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
             outline: none;
             transition: border-color 0.3s;
+            background: var(--container-bg);
+            color: var(--text-primary);
         }
 
         #taskInput:focus {
-            border-color: #667eea;
+            border-color: var(--input-focus);
         }
 
         #addBtn {
             padding: 12px 25px;
-            background: #667eea;
+            background: var(--button-primary);
             color: white;
             border: none;
             border-radius: 8px;
@@ -70,19 +140,75 @@
         }
 
         #addBtn:hover {
-            background: #5568d3;
+            background: var(--button-primary-hover);
+        }
+
+        .task-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-group label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        select, input[type="date"] {
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: var(--container-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        select:focus, input[type="date"]:focus {
+            border-color: var(--input-focus);
+        }
+
+        .controls-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: var(--container-bg);
+            color: var(--text-primary);
+        }
+
+        .search-box:focus {
+            border-color: var(--input-focus);
         }
 
         .filter-section {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
+            gap: 8px;
         }
 
         .filter-btn {
             padding: 8px 16px;
-            background: #f0f0f0;
+            background: var(--task-bg);
+            color: var(--text-primary);
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -91,24 +217,85 @@
         }
 
         .filter-btn.active {
-            background: #667eea;
+            background: var(--button-primary);
             color: white;
+        }
+
+        .sort-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sort-section label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: var(--button-success);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--button-success-hover);
         }
 
         .task-list {
             list-style: none;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .task-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: var(--button-primary);
+            border-radius: 4px;
         }
 
         .task-item {
-            background: #f9f9f9;
+            background: var(--task-bg);
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
             transition: all 0.3s;
             animation: slideIn 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .task-item.priority-high {
+            border-left-color: var(--priority-high);
+        }
+
+        .task-item.priority-medium {
+            border-left-color: var(--priority-medium);
+        }
+
+        .task-item.priority-low {
+            border-left-color: var(--priority-low);
+        }
+
+        .task-item.overdue {
+            background: rgba(255, 107, 129, 0.1);
         }
 
         @keyframes slideIn {
@@ -123,7 +310,7 @@
         }
 
         .task-item:hover {
-            background: #f0f0f0;
+            background: var(--task-hover);
             transform: translateX(5px);
         }
 
@@ -133,53 +320,288 @@
 
         .task-item.completed .task-text {
             text-decoration: line-through;
-            color: #999;
+            color: var(--text-muted);
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
         }
 
         .checkbox {
             width: 20px;
             height: 20px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: var(--button-primary);
+            flex-shrink: 0;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .task-text {
-            flex: 1;
             font-size: 16px;
-            color: #333;
+            color: var(--text-primary);
             word-break: break-word;
+            cursor: pointer;
+        }
+
+        .task-text:hover {
+            color: var(--button-primary);
+        }
+
+        .task-edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid var(--input-focus);
+            border-radius: 6px;
+            font-size: 16px;
+            background: var(--container-bg);
+            color: var(--text-primary);
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .task-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+        }
+
+        .task-meta-item.overdue-text {
+            color: var(--overdue);
+            font-weight: 600;
+        }
+
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .priority-badge.high {
+            background: var(--priority-high);
+        }
+
+        .priority-badge.medium {
+            background: var(--priority-medium);
+        }
+
+        .priority-badge.low {
+            background: var(--priority-low);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .task-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .edit-btn {
+            background: var(--button-primary);
+        }
+
+        .edit-btn:hover {
+            background: var(--button-primary-hover);
         }
 
         .delete-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
+            background: var(--button-danger);
         }
 
         .delete-btn:hover {
-            background: #ff3838;
+            background: var(--button-danger-hover);
+        }
+
+        .task-notes {
+            margin-top: 8px;
+            padding: 10px;
+            background: var(--container-bg);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .task-notes-toggle {
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: transparent;
+            color: var(--button-primary);
+            border: 1px solid var(--button-primary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .task-notes-toggle:hover {
+            background: var(--button-primary);
+            color: white;
         }
 
         .task-count {
             text-align: center;
             margin-top: 20px;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 14px;
         }
 
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #999;
+            color: var(--text-muted);
             font-size: 16px;
         }
 
-        @media (max-width: 480px) {
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            background: var(--container-bg);
+            color: var(--text-primary);
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--input-focus);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: var(--button-primary);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: var(--button-primary-hover);
+        }
+
+        .modal-btn-secondary {
+            background: var(--task-bg);
+            color: var(--text-primary);
+        }
+
+        .modal-btn-secondary:hover {
+            background: var(--task-hover);
+        }
+
+        @media (max-width: 768px) {
             .container {
                 padding: 20px;
             }
@@ -188,29 +610,97 @@
                 font-size: 24px;
             }
 
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
             .input-section {
+                gap: 8px;
+            }
+
+            .input-row {
                 flex-direction: column;
             }
 
             #addBtn {
                 width: 100%;
             }
+
+            .controls-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-section, .sort-section, .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .task-header {
+                flex-wrap: wrap;
+            }
+
+            .task-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📝 タスク管理</h1>
-
-        <div class="input-section">
-            <input type="text" id="taskInput" placeholder="新しいタスクを入力..." />
-            <button id="addBtn">追加</button>
+        <div class="header">
+            <h1>📝 高機能タスク管理</h1>
+            <button class="theme-toggle" id="themeToggle">🌙 ダークモード</button>
         </div>
 
-        <div class="filter-section">
-            <button class="filter-btn active" data-filter="all">すべて</button>
-            <button class="filter-btn" data-filter="active">未完了</button>
-            <button class="filter-btn" data-filter="completed">完了済み</button>
+        <div class="input-section">
+            <div class="input-row">
+                <input type="text" id="taskInput" placeholder="新しいタスクを入力..." />
+                <button id="addBtn">追加</button>
+            </div>
+            <div class="task-options">
+                <div class="option-group">
+                    <label>優先度:</label>
+                    <select id="prioritySelect">
+                        <option value="low">低</option>
+                        <option value="medium" selected>中</option>
+                        <option value="high">高</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label>期限:</label>
+                    <input type="date" id="dueDateInput" />
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <input type="text" id="searchBox" class="search-box" placeholder="🔍 タスクを検索..." />
+
+            <div class="filter-section">
+                <button class="filter-btn active" data-filter="all">すべて</button>
+                <button class="filter-btn" data-filter="active">未完了</button>
+                <button class="filter-btn" data-filter="completed">完了済み</button>
+            </div>
+
+            <div class="sort-section">
+                <label>並び替え:</label>
+                <select id="sortSelect">
+                    <option value="created-desc">作成日(新)</option>
+                    <option value="created-asc">作成日(古)</option>
+                    <option value="priority-desc">優先度(高)</option>
+                    <option value="priority-asc">優先度(低)</option>
+                    <option value="duedate-asc">期限(近)</option>
+                    <option value="duedate-desc">期限(遠)</option>
+                </select>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" id="exportBtn">📤 エクスポート</button>
+                <button class="action-btn" id="importBtn">📥 インポート</button>
+            </div>
         </div>
 
         <ul class="task-list" id="taskList"></ul>
@@ -218,21 +708,60 @@
         <div class="task-count" id="taskCount"></div>
     </div>
 
+    <!-- メモ編集モーダル -->
+    <div class="modal" id="notesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">タスクのメモ</h3>
+                <button class="modal-close" id="closeModal">×</button>
+            </div>
+            <div class="form-group">
+                <label>メモ内容:</label>
+                <textarea id="notesTextarea" placeholder="詳細なメモを入力..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" id="cancelNotes">キャンセル</button>
+                <button class="modal-btn modal-btn-primary" id="saveNotes">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" accept=".json" style="display: none;" />
+
     <script>
         class TaskManager {
             constructor() {
                 this.tasks = this.loadTasks();
                 this.currentFilter = 'all';
+                this.currentSort = 'created-desc';
+                this.searchQuery = '';
+                this.editingTaskId = null;
+                this.darkMode = localStorage.getItem('darkMode') === 'true';
                 this.init();
             }
 
             init() {
+                // DOM要素の取得
                 this.taskInput = document.getElementById('taskInput');
                 this.addBtn = document.getElementById('addBtn');
                 this.taskList = document.getElementById('taskList');
                 this.taskCount = document.getElementById('taskCount');
                 this.filterBtns = document.querySelectorAll('.filter-btn');
+                this.prioritySelect = document.getElementById('prioritySelect');
+                this.dueDateInput = document.getElementById('dueDateInput');
+                this.searchBox = document.getElementById('searchBox');
+                this.sortSelect = document.getElementById('sortSelect');
+                this.exportBtn = document.getElementById('exportBtn');
+                this.importBtn = document.getElementById('importBtn');
+                this.importFile = document.getElementById('importFile');
+                this.themeToggle = document.getElementById('themeToggle');
+                this.notesModal = document.getElementById('notesModal');
+                this.notesTextarea = document.getElementById('notesTextarea');
+                this.closeModal = document.getElementById('closeModal');
+                this.cancelNotes = document.getElementById('cancelNotes');
+                this.saveNotes = document.getElementById('saveNotes');
 
+                // イベントリスナーの設定
                 this.addBtn.addEventListener('click', () => this.addTask());
                 this.taskInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.addTask();
@@ -246,6 +775,37 @@
                     });
                 });
 
+                this.searchBox.addEventListener('input', (e) => {
+                    this.searchQuery = e.target.value.toLowerCase();
+                    this.render();
+                });
+
+                this.sortSelect.addEventListener('change', (e) => {
+                    this.currentSort = e.target.value;
+                    this.render();
+                });
+
+                this.exportBtn.addEventListener('click', () => this.exportTasks());
+                this.importBtn.addEventListener('click', () => this.importFile.click());
+                this.importFile.addEventListener('change', (e) => this.importTasks(e));
+
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+
+                this.closeModal.addEventListener('click', () => this.closeNotesModal());
+                this.cancelNotes.addEventListener('click', () => this.closeNotesModal());
+                this.saveNotes.addEventListener('click', () => this.saveTaskNotes());
+
+                // モーダル外クリックで閉じる
+                this.notesModal.addEventListener('click', (e) => {
+                    if (e.target === this.notesModal) this.closeNotesModal();
+                });
+
+                // ダークモード適用
+                if (this.darkMode) {
+                    document.body.classList.add('dark-mode');
+                    this.themeToggle.textContent = '☀️ ライトモード';
+                }
+
                 this.render();
             }
 
@@ -257,12 +817,17 @@
                     id: Date.now(),
                     text: text,
                     completed: false,
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    priority: this.prioritySelect.value,
+                    dueDate: this.dueDateInput.value || null,
+                    notes: ''
                 };
 
                 this.tasks.push(task);
                 this.saveTasks();
                 this.taskInput.value = '';
+                this.dueDateInput.value = '';
+                this.prioritySelect.value = 'medium';
                 this.render();
             }
 
@@ -276,20 +841,125 @@
             }
 
             deleteTask(id) {
-                this.tasks = this.tasks.filter(t => t.id !== id);
-                this.saveTasks();
+                if (confirm('このタスクを削除しますか？')) {
+                    this.tasks = this.tasks.filter(t => t.id !== id);
+                    this.saveTasks();
+                    this.render();
+                }
+            }
+
+            startEditTask(id) {
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+
+                this.editingTaskId = id;
                 this.render();
             }
 
+            saveEditTask(id, newText) {
+                const task = this.tasks.find(t => t.id === id);
+                if (task && newText.trim() !== '') {
+                    task.text = newText.trim();
+                    this.saveTasks();
+                }
+                this.editingTaskId = null;
+                this.render();
+            }
+
+            cancelEdit() {
+                this.editingTaskId = null;
+                this.render();
+            }
+
+            openNotesModal(id) {
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+
+                this.editingTaskId = id;
+                this.notesTextarea.value = task.notes || '';
+                this.notesModal.classList.add('active');
+            }
+
+            closeNotesModal() {
+                this.notesModal.classList.remove('active');
+                this.editingTaskId = null;
+            }
+
+            saveTaskNotes() {
+                if (this.editingTaskId) {
+                    const task = this.tasks.find(t => t.id === this.editingTaskId);
+                    if (task) {
+                        task.notes = this.notesTextarea.value;
+                        this.saveTasks();
+                        this.render();
+                    }
+                }
+                this.closeNotesModal();
+            }
+
+            isOverdue(task) {
+                if (!task.dueDate || task.completed) return false;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const dueDate = new Date(task.dueDate);
+                return dueDate < today;
+            }
+
+            formatDate(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            }
+
             getFilteredTasks() {
+                let filtered = this.tasks;
+
+                // フィルタ適用
                 switch (this.currentFilter) {
                     case 'active':
-                        return this.tasks.filter(t => !t.completed);
+                        filtered = filtered.filter(t => !t.completed);
+                        break;
                     case 'completed':
-                        return this.tasks.filter(t => t.completed);
-                    default:
-                        return this.tasks;
+                        filtered = filtered.filter(t => t.completed);
+                        break;
                 }
+
+                // 検索適用
+                if (this.searchQuery) {
+                    filtered = filtered.filter(t =>
+                        t.text.toLowerCase().includes(this.searchQuery) ||
+                        (t.notes && t.notes.toLowerCase().includes(this.searchQuery))
+                    );
+                }
+
+                return filtered;
+            }
+
+            getSortedTasks(tasks) {
+                const priorityValue = { high: 3, medium: 2, low: 1 };
+
+                return [...tasks].sort((a, b) => {
+                    switch (this.currentSort) {
+                        case 'created-desc':
+                            return new Date(b.createdAt) - new Date(a.createdAt);
+                        case 'created-asc':
+                            return new Date(a.createdAt) - new Date(b.createdAt);
+                        case 'priority-desc':
+                            return priorityValue[b.priority] - priorityValue[a.priority];
+                        case 'priority-asc':
+                            return priorityValue[a.priority] - priorityValue[b.priority];
+                        case 'duedate-asc':
+                            if (!a.dueDate) return 1;
+                            if (!b.dueDate) return -1;
+                            return new Date(a.dueDate) - new Date(b.dueDate);
+                        case 'duedate-desc':
+                            if (!a.dueDate) return 1;
+                            if (!b.dueDate) return -1;
+                            return new Date(b.dueDate) - new Date(a.dueDate);
+                        default:
+                            return 0;
+                    }
+                });
             }
 
             updateFilterButtons() {
@@ -300,20 +970,76 @@
 
             render() {
                 const filteredTasks = this.getFilteredTasks();
+                const sortedTasks = this.getSortedTasks(filteredTasks);
 
-                if (filteredTasks.length === 0) {
+                if (sortedTasks.length === 0) {
                     this.taskList.innerHTML = '<div class="empty-state">タスクがありません</div>';
                 } else {
-                    this.taskList.innerHTML = filteredTasks.map(task => `
-                        <li class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
-                            <input type="checkbox"
-                                   class="checkbox"
-                                   ${task.completed ? 'checked' : ''}
-                                   onchange="taskManager.toggleTask(${task.id})">
-                            <span class="task-text">${this.escapeHtml(task.text)}</span>
-                            <button class="delete-btn" onclick="taskManager.deleteTask(${task.id})">削除</button>
-                        </li>
-                    `).join('');
+                    this.taskList.innerHTML = sortedTasks.map(task => {
+                        const isEditing = this.editingTaskId === task.id;
+                        const isOverdue = this.isOverdue(task);
+                        const priorityLabel = { high: '高', medium: '中', low: '低' };
+
+                        return `
+                            <li class="task-item ${task.completed ? 'completed' : ''} priority-${task.priority} ${isOverdue ? 'overdue' : ''}" data-id="${task.id}">
+                                <div class="task-header">
+                                    <input type="checkbox"
+                                           class="checkbox"
+                                           ${task.completed ? 'checked' : ''}
+                                           onchange="taskManager.toggleTask(${task.id})">
+                                    <div class="task-content">
+                                        ${isEditing ? `
+                                            <input type="text"
+                                                   class="task-edit-input"
+                                                   value="${this.escapeHtml(task.text)}"
+                                                   id="edit-input-${task.id}"
+                                                   onblur="taskManager.saveEditTask(${task.id}, this.value)"
+                                                   onkeypress="if(event.key==='Enter') taskManager.saveEditTask(${task.id}, this.value); if(event.key==='Escape') taskManager.cancelEdit()">
+                                        ` : `
+                                            <div class="task-text" ondblclick="taskManager.startEditTask(${task.id})">
+                                                ${this.escapeHtml(task.text)}
+                                            </div>
+                                        `}
+                                        <div class="task-meta">
+                                            <span class="task-meta-item">
+                                                <span class="priority-badge ${task.priority}">${priorityLabel[task.priority]}</span>
+                                            </span>
+                                            ${task.dueDate ? `
+                                                <span class="task-meta-item ${isOverdue ? 'overdue-text' : ''}">
+                                                    📅 ${this.formatDate(task.dueDate)}
+                                                    ${isOverdue ? '(期限切れ)' : ''}
+                                                </span>
+                                            ` : ''}
+                                            <span class="task-meta-item">
+                                                🕐 ${this.formatDate(task.createdAt)}
+                                            </span>
+                                            ${task.notes ? `
+                                                <span class="task-meta-item">
+                                                    📝 メモあり
+                                                </span>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="task-actions">
+                                        <button class="task-btn edit-btn" onclick="taskManager.openNotesModal(${task.id})" title="メモを編集">📝</button>
+                                        <button class="task-btn edit-btn" onclick="taskManager.startEditTask(${task.id})" title="編集">✏️</button>
+                                        <button class="task-btn delete-btn" onclick="taskManager.deleteTask(${task.id})" title="削除">🗑️</button>
+                                    </div>
+                                </div>
+                            </li>
+                        `;
+                    }).join('');
+
+                    // 編集中の入力欄にフォーカス
+                    if (this.editingTaskId) {
+                        setTimeout(() => {
+                            const editInput = document.getElementById(`edit-input-${this.editingTaskId}`);
+                            if (editInput) {
+                                editInput.focus();
+                                editInput.select();
+                            }
+                        }, 0);
+                    }
                 }
 
                 this.updateTaskCount();
@@ -323,8 +1049,53 @@
                 const total = this.tasks.length;
                 const active = this.tasks.filter(t => !t.completed).length;
                 const completed = this.tasks.filter(t => t.completed).length;
+                const overdue = this.tasks.filter(t => this.isOverdue(t)).length;
 
-                this.taskCount.textContent = `合計: ${total}件 | 未完了: ${active}件 | 完了: ${completed}件`;
+                this.taskCount.textContent = `合計: ${total}件 | 未完了: ${active}件 | 完了: ${completed}件${overdue > 0 ? ` | 期限切れ: ${overdue}件` : ''}`;
+            }
+
+            exportTasks() {
+                const dataStr = JSON.stringify(this.tasks, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `tasks-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            importTasks(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedTasks = JSON.parse(e.target.result);
+                        if (Array.isArray(importedTasks)) {
+                            if (confirm(`${importedTasks.length}件のタスクをインポートします。既存のタスクは保持されます。よろしいですか？`)) {
+                                this.tasks = [...this.tasks, ...importedTasks];
+                                this.saveTasks();
+                                this.render();
+                                alert('インポートが完了しました！');
+                            }
+                        } else {
+                            alert('無効なファイル形式です。');
+                        }
+                    } catch (error) {
+                        alert('ファイルの読み込みに失敗しました。');
+                    }
+                    this.importFile.value = '';
+                };
+                reader.readAsText(file);
+            }
+
+            toggleTheme() {
+                this.darkMode = !this.darkMode;
+                document.body.classList.toggle('dark-mode');
+                this.themeToggle.textContent = this.darkMode ? '☀️ ライトモード' : '🌙 ダークモード';
+                localStorage.setItem('darkMode', this.darkMode);
             }
 
             escapeHtml(text) {
